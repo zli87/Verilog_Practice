@@ -6,10 +6,11 @@ Language: Verilog
 ### Example Block Diagram
 ![Block Diagram](block_diagram.png)
 
-### pseudo-random number generation with LFSR
+### Pseudo-random number generation with linear-feedback shift register(LFSR)
 
 ![Block Diagram](poly.png)  
-I implemented this 32 bit Feedback Polynomial in a simple random generator module with a parameter SEED. You can refer to the reference [1] and [2] for more detail of theory.
+I implemented this Feedback Polynomial in a simple random generator module with a parameter SEED.   
+You can refer to the reference [1] and [2] for more details.
 
 port | name
 -|-
