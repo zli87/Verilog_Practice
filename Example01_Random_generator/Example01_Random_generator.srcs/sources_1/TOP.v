@@ -23,7 +23,7 @@
 module TOP(
 input wire clk,
 input wire rst,
-output wire done // leds
+output wire [7:0] Dout
     );
     wire rst_n;
     assign rst_n = ~rst;
@@ -38,6 +38,6 @@ output wire done // leds
     
     Multiplier wrapper( .clk(clk), .rst_n(rst_n), .A_i(A), .B_i(B), .D_o(D) );
     
-    assign done = D[7]; // use led to provide output timing constrain
-    
+    // use LCD pin to provide output timing constrain, otherwise vivado will not synthesize design...
+    assign Dout = D; 
 endmodule
