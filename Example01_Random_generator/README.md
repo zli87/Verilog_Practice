@@ -1,14 +1,14 @@
 ## Practice 01: Random Generator
-Platform: Vivado 2019.1
-Simulator: Vivado Simulator
-Language: Verilog
+Platform: Vivado 2019.1  
+Simulator: Vivado Simulator  
+Language: Verilog  
 
 ### Example Block Diagram
 ![Block Diagram](block_diagram.png)
 
 ### pseudo-random number generation with LFSR
 
-![Block Diagram](poly.png)
+![Block Diagram](poly.png)  
 I implemented this 32 bit Feedback Polynomial in a simple random generator module with a parameter SEED. You can refer to the reference [1] and [2] for more detail of theory.
 
 port | name
