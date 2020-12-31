@@ -1,4 +1,4 @@
-## Practice 01: Random Generator
+## 01: Random Generator
 Platform: Vivado 2019.1  
 Simulator: Vivado Simulator  
 Language: Verilog  
