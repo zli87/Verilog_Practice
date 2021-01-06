@@ -1,7 +1,8 @@
 # 01: Asynchronize FIFO
 Platform: **EDAplayground** or Vivado<br>
 Simulator: **Synopsys VCS 2020.3** or Vivado Simulator<br>  
-Language: Verilog
+Language: Verilog<br>
+
 [-> Code on EDAplayground](https://www.edaplayground.com/x/dQzx)
 
 # FIFO block diagram
