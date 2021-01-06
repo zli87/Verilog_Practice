@@ -1,7 +1,7 @@
 # 01: Asynchronize FIFO
+Language: Verilog<br>
 Platform: **EDAplayground** or Vivado<br>
 Simulator: **Synopsys VCS 2020.3** or Vivado Simulator<br>  
-Language: Verilog<br>
 
 [-> Code on EDAplayground](https://www.edaplayground.com/x/dQzx)
 
