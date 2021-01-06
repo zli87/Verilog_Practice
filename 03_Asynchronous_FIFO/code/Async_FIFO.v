@@ -1,16 +1,17 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Purpose: practice verilog coding
 // Engineer: Allen Li
 // 
 // Create Date: 12/30/2020 01:17:54 AM
-// Design Name: Async_FIFO
+// Design Name: Asynchronous FIFO
 // Module Name: Async_FIFO
-// Project Name: 
+// Project Name: Asynchronous FIFO
 // Target Devices: 
-// Tool Versions: vivado 2019.1
+// Tool Versions: Synopsys VCS 2020.3
 // Description:  
-    // Async_FIFO
+//      fifo depth: 10
+//      binary counter: from 2^3 -10/2 to 2^3 +10/2-1 = 3~12
+//      gray counter: 3(0010) ~ 12(1010)
 // Dependencies: 
 // 
 // Revision: 
@@ -18,6 +19,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+`include "Binary2Gray.v"
+`include "Gray2Binary.v"
+`include "FIFO_MEM.v"
 
 module Async_FIFO #(
     parameter DATA_WIDTH = 32
@@ -39,6 +43,8 @@ module Async_FIFO #(
     output [DATA_WIDTH-1:0] rdata 
     );
 
+    localparam GRAY_CNT_BEGIN = 2;  // 0010
+
     // use one more addr bit for wfull, rempty compare
     reg [4:0] wptr;
     reg [4:0] wq2_rptr;
@@ -59,8 +65,8 @@ module Async_FIFO #(
     wire writable;
     wire readable;
     
-    assign wptr_next = wptr+1;
-    assign rptr_next = rptr+1;
+    assign wptr_next = (wptr[3:0] >= 4'd12)? {~wptr[4],4'd3}: wptr+1;
+    assign rptr_next = (rptr[3:0] >= 4'd12)? {~rptr[4],4'd3}: rptr+1;
     
     assign wfull = ({~wptr[4],wptr[3:0]}==bin_rptr)? 1 : 0;
     assign rempty = (bin_wptr == rptr)? 1 : 0;
@@ -71,10 +77,10 @@ module Async_FIFO #(
     assign writable = winc & (~wfull);
     assign readable = rinc & (~rempty);
 
-    Binary2Gray inst_b2g_wptr(.BIN_i(wptr),.GRAY_o(gray_wptr));
-    Binary2Gray inst_b2g_rptr(.BIN_i(rptr),.GRAY_o(gray_rptr));
-    Gray2Binary inst_g2b_rptr(.GRAY_i(wq2_rptr),.BIN_o(bin_rptr));
-    Gray2Binary inst_g2b_wptr(.GRAY_i(rq2_wptr),.BIN_o(bin_wptr));
+    Binary2Gray #(.WIDTH(5)) inst_b2g_wptr(.BIN_i(wptr),.GRAY_o(gray_wptr));
+    Binary2Gray #(.WIDTH(5)) inst_b2g_rptr(.BIN_i(rptr),.GRAY_o(gray_rptr));
+    Gray2Binary #(.WIDTH(5)) inst_g2b_rptr(.GRAY_i(wq2_rptr),.BIN_o(bin_rptr));
+    Gray2Binary #(.WIDTH(5)) inst_g2b_wptr(.GRAY_i(rq2_wptr),.BIN_o(bin_wptr));
 
     FIFO_MEM #(.DATA_WIDTH(DATA_WIDTH)) inst_fifo_mem(
         //wport
@@ -90,14 +96,14 @@ module Async_FIFO #(
     );
     always @(posedge rclk or negedge rrst_n) begin
         if (!wrst_n) begin
-            reg_gray_rptr <= 0;
+            reg_gray_rptr <= GRAY_CNT_BEGIN;
         end else begin
             reg_gray_rptr <= gray_rptr;
         end
     end
     always @(posedge wclk or negedge wrst_n) begin
         if (!wrst_n) begin
-            reg_gray_wptr <= 0;
+            reg_gray_wptr <= GRAY_CNT_BEGIN;
         end else begin
             reg_gray_wptr <= gray_wptr;
         end
@@ -105,8 +111,8 @@ module Async_FIFO #(
     
     always @(posedge wclk or negedge wrst_n) begin
         if (!wrst_n) begin
-            sync_r2w <= 0;
-            wq2_rptr <= 0;
+            sync_r2w <= GRAY_CNT_BEGIN;
+            wq2_rptr <= GRAY_CNT_BEGIN;
         end else begin
             sync_r2w <= reg_gray_rptr;
             wq2_rptr <= sync_r2w;
@@ -115,8 +121,8 @@ module Async_FIFO #(
 
     always @(posedge rclk or negedge rrst_n) begin
         if (!wrst_n) begin
-            sync_w2r <= 0;
-            rq2_wptr <= 0;
+            sync_w2r <= GRAY_CNT_BEGIN;
+            rq2_wptr <= GRAY_CNT_BEGIN;
         end else begin
             sync_w2r <= reg_gray_wptr;
             rq2_wptr <= sync_w2r;
@@ -125,17 +131,21 @@ module Async_FIFO #(
 
     always @(posedge wclk or negedge wrst_n) begin
         if (!wrst_n) begin
-            wptr <= 0;
+            wptr <= 'd3;
+        end else if ( writable )begin
+            wptr <= wptr_next;
         end else begin
-            wptr <= ( writable )? wptr+1 : wptr;
+            wptr <= wptr;
         end
     end
 
     always @(posedge rclk or negedge rrst_n) begin
         if (!rrst_n) begin
-            rptr <= 0;
+            rptr <= 'd3;
+        end else if ( readable )begin
+            rptr <= rptr_next;
         end else begin
-            rptr <= ( readable )? rptr+1 : rptr;
+            rptr <= rptr;
         end
     end
     

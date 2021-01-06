@@ -1,61 +1,77 @@
-## 01: Asynchronize FIFO
-Platform: Vivado 2019.1  
-Simulator: Vivado Simulator  
+# 01: Asynchronize FIFO
+Platform: **EDAplayground** or Vivado
+Simulator: **Synopsys VCS 2020.3** or Vivado Simulator  
 Language: Verilog  
+[-> Code on EDAplayground](https://www.edaplayground.com/x/dQzx)
 
-### FIFO block diagram
+# FIFO block diagram
 ![Block Diagram](pic/fifo.png)
 
-### testing environment
+# testing environment
 ![testing_environment](pic/test_env.png)
-### module description
+# module description
 
-##### 1. Producer
+### 1. Producer
 - controls winc, wdata to Async_FIFO mopdule. 
 - wdata is a up counter start from 1.
-##### 2. Reciever
+### 2. Reciever
 - controls rinc to Async_FIFO mopdule. 
 - checks whether the rdata read from FIFO is correct.(compared rdata with recieve counter)
-##### 3. Async_FIFO
+### 3. Async_FIFO
 - recieves wdata from Producer.
 - sends rdata to Receiver.
-##### 4. FIFO_MEM
+### 4. FIFO_MEM
 - a simple dual port memory
 - wirte port: provides synchrous write at the wclk's posedge.
 - read port: provides asynchrous read 
 
-### implementation details
+# implementation details
 ![ptr_block](pic/ptr_gray_binary.png)
-##### 1. binary2gray [1]
-![binary2gray](pic/b2g.gif)
+### 1. binary2gray [[1]](#Reference)
+![binary2gray](pic/b2g.png)
 
-##### 2. gray2binary [2]
-![binary2gray](pic/g2b.gif)
+### 2. gray2binary [[2]](#Reference)
+![binary2gray](pic/g2b.png)
 
-##### 3. comparison [3]
+### 3. comparison [[3]](#Reference)
 - I extend one more bit on the pointer. By comaring the first bit and the rest four bits of the two pointer, the system can simply determines wfull and rempty signals. 
 - For example, when the write pointer counts to 5'b10000 and the read pointer counts to 5'b00000, the FIFO is full. It can be calculated by:
 - wfull = ( {~wptr[4],wptr[3:0]}, rptr )? 1 : 0;
 - rempty = ( wptr, rptr )? 1 : 0;
 
-### discussion
+### 4. FIFO depth (not power of 2) [[3]](#Reference)
+- To design a gray counter which is not power of 2, we need to make gray counter's start count is only one bit different with end count. 
+- Here is the formula to calculate.
+![fifo_depth_formula](pic/fifodepth_formula.png)
+- For example, I set FIFO depth equal to 10 in my design. The binary cpunter counts from 3 to 12 (from 2^4 - 10/2 to 2^4 - 10/2 +1). Thus, the gray code counts from 0010 to 1010, and repeat to 0010.
+
+decimal | binary | gray
+-|-|-
+3| 0011 | 0010
+4| 0100 | 0110
+5 | 0101 | 0111
+6 | 0110 | 0101
+7 | 0111 | 0100
+8 | 1000 | 1100
+9 | 1001 | 1101
+10 | 1010 | 1111
+11 | 1011 | 1110
+12 | 1100 | 1010
+
+# discussion
 
 1.Why use gray code counter in Asynchronous FIFO?
 - if the counter changes more than one bit in the next clock, the output of synchronizer may occur unexpected output in the switch process. This unexpected output may cause error in wfull or rempty signals.
 - For example, if counter changes from 101 -> 110, the output of synchronizer may switch like 101-> 111 -> 110 in a very short period. 
 
-2.How to design a FIFO if FIFO depth is not power of 2?
-- Formula to calculate gray code counter with a fifo depth which is not power of 2.
-![fifo_depth_formula](pic/fifodepth_formula.png) 
-
-3.what is the purpose of already_wfull and already_rempty signals?
+2.what is the purpose of already_wfull and already_rempty signals?
 - already signals can help master control wdata with less logic.
 - When the producer recieves an wfull signal, it needs to wait until FIFO is not full and to reproduce the previous wdata. If the producer does not reproduce the wdata, FIFO will miss the wdata as the first waveform.
 ![fifo_without_already](pic/fifo_problem.png)
 - But if producer recieves an already_wfull signal, it just need to wait until FIFO is not already full. Producer does not need to reproduce the previous wdata.
 ![fifo_with_already](pic/fifo_problem_solve.png)
 
-### Refrence:
+# Reference
 
 [1]: [Conversion of Binary to Gray Code](https://www.tutorialspoint.com/conversion-of-binary-to-gray-code)
 [2]: [Conversion of Gray Code to Binary](https://www.tutorialspoint.com/conversion-of-gray-code-to-binary)

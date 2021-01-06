@@ -1,16 +1,15 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Purpose: practice verilog coding
 // Engineer: Allen Li
 // 
 // Create Date: 12/30/2020 01:17:54 AM
-// Design Name: Async_FIFO
-// Module Name: Async_FIFO
-// Project Name: 
+// Design Name: FIFO memory
+// Module Name: FIFO_MEM
+// Project Name: Asynchronous FIFO
 // Target Devices: 
-// Tool Versions: vivado 2019.1
+// Tool Versions: Synopsys VCS 2020.3
 // Description:  
-    // Async_FIFO
+//      simple dual port sram in the Asynchronous FIFO. One is sychronized write port with wclk, another is asynchronous read port.
 // Dependencies: 
 // 
 // Revision: 
@@ -40,10 +39,6 @@ module FIFO_MEM #(
             MEM[waddr] <= wdata;
         end
     end
-//    always @(posedge rclk or negedge rrst_n) begin
-//        if (!rrst_n) begin
-//            rdata <= 0;
-//        end else begin
              
    assign   rdata = MEM[raddr];
 
