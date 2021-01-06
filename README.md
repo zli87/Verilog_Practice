@@ -1,8 +1,8 @@
 # Verilog_Practice
 
-Language: Verilog   
-Platform: Vivado 2019.1  
-Simulator: Vivado Simulator  
-Synthesis: Vivado Synthesis
 
-[01: Random Generator](https://github.com/ZongRuLi/Verilog_Practice/tree/main/01_Random_generator)
+[01: Random generator](https://github.com/ZongRuLi/Verilog_Practice/tree/main/01_Random_generator)
+
+[02: Clock divider](https://github.com/ZongRuLi/Verilog_Practice/tree/main/02_Clock_divider)
+
+[03: Asynchronous FIFO](https://github.com/ZongRuLi/Verilog_Practice/tree/main/03_Asynchronous_FIFO)

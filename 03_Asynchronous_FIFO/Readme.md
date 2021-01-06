@@ -47,10 +47,13 @@ Language: Verilog
 2.How to design a FIFO if FIFO depth is not power of 2?
 - Formula to calculate gray code counter with a fifo depth which is not power of 2.
 ![fifo_depth_formula](pic/fifodepth_formula.png) 
-- to be done
 
 3.what is the purpose of already_wfull and already_rempty signals?
-- to be done
+- already signals can help master control wdata with less logic.
+- When the producer recieves an wfull signal, it needs to wait until FIFO is not full and to reproduce the previous wdata. If the producer does not reproduce the wdata, FIFO will miss the wdata as the first waveform.
+![fifo_without_already](pic/fifo_problem.png)
+- But if producer recieves an already_wfull signal, it just need to wait until FIFO is not already full. Producer does not need to reproduce the previous wdata.
+![fifo_with_already](pic/fifo_problem_solve.png)
 
 ### Refrence:
 

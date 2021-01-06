@@ -4,11 +4,11 @@ Simulator: Vivado Simulator
 Language: Verilog  
 
 ### Example Block Diagram
-![Block Diagram](block_diagram.png)
+![Block Diagram](pic/block_diagram.png)
 
 ### Pseudo-random number generation with linear-feedback shift register(LFSR)
 
-![Block Diagram](poly.png)  
+![Block Diagram](pic/poly.png)  
 I implemented this Feedback Polynomial in a simple random generator module with a parameter SEED.   
 You can refer to the reference [1] and [2] for more details.
 
