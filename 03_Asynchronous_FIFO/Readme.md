@@ -37,14 +37,15 @@ Simulator: **Synopsys VCS 2020.3** or Vivado Simulator<br>
 ### 3. comparison [[3]](#Reference)
 - I extend one more bit on the pointer. By comaring the first bit and the rest four bits of the two pointer, the system can simply determines wfull and rempty signals. 
 - For example, when the write pointer counts to 5'b10000 and the read pointer counts to 5'b00000, the FIFO is full. It can be calculated by:
-- wfull = ( {~wptr[4],wptr[3:0]}, rptr )? 1 : 0;
-- rempty = ( wptr, rptr )? 1 : 0;
+- assign wfull = ( {~wptr[4],wptr[3:0]}, rptr )? 1 : 0;
+- assign rempty = ( wptr, rptr )? 1 : 0;
 
 ### 4. FIFO depth (not power of 2) [[3]](#Reference)
 - To design a gray counter which is not power of 2, we need to make gray counter's start count is only one bit different with end count. 
 - Here is the formula to calculate.
 ![fifo_depth_formula](pic/fifodepth_formula.png)
-- For example, I set FIFO depth equal to 10 in my design. The binary cpunter counts from 3 to 12 (from 2^4 - 10/2 to 2^4 - 10/2 +1). Thus, the gray code counts from 0010 to 1010, and repeat to 0010.
+- For example, I set FIFO depth equal to 10 in my design. The binary cpunter counts from 3 to 12 (from 2^4 - 10/2 to 2^4 - 10/2 +1). Thus, the gray code counts from 0010 to 1010. Then, counter inverts wptr[4] and repeat to 0010.
+- assign wptr_next = (wptr[3:0] >= 4'd12)? {~wptr[4],4'd3}: wptr+1;
 
 decimal | binary | gray
 -|-|-
