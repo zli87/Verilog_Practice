@@ -1,5 +1,6 @@
 # Verilog_Practice
 
+This repo shows my practice of some interview questions.
 
 [01: Random generator](https://github.com/ZongRuLi/Verilog_Practice/tree/main/01_Random_generator)
 
