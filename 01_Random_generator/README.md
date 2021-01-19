@@ -19,7 +19,7 @@ output| lsfr_o
 
 Random #(.SEED(32'h8456CAD7) ) instance( .clk(clk), .rst_n(rst_n), .lsfr_o(rand) );
 
-### Refrence:
+### Reference:
 
 [1]:  [FPGA Implementation of 8, 16 and 32 Bit LFSR with Maximum Length Feedback Polynomial using VHDL](https://ieeexplore.ieee.org/document/6200740)<br>
 
